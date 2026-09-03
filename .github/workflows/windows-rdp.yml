@@ -16,19 +16,19 @@ jobs:
 
       - name: 2. Create Admin Account & Workspace Folder
         run: |
-          $Password = ConvertTo-SecureString "Cynet@2026" -AsPlainText -Force
-          New-LocalUser -Name "CynetAdmin" -Password $Password -PasswordNeverExpires -ErrorAction SilentlyContinue
-          Add-LocalGroupMember -Group "Administrators" -Member "CynetAdmin" -ErrorAction SilentlyContinue
-          net user runneradmin Cynet@2026
+          $Password = ConvertTo-SecureString "1389M1396m" -AsPlainText -Force
+          New-LocalUser -Name "behrad" -Password $Password -PasswordNeverExpires -ErrorAction SilentlyContinue
+          Add-LocalGroupMember -Group "Administrators" -Member "behrad" -ErrorAction SilentlyContinue
+          net user runneradmin 1389M1396m
           
           # ساخت پوشه هارد دائمی در مسیر کاربر
-          New-Item -ItemType Directory -Force -Path "C:\Users\CynetAdmin\workspace"
+          New-Item -ItemType Directory -Force -Path "C:\Users\behrad\workspace"
 
       # بازیابی فایل‌های قبلی از کش ابری گیتهاب
       - name: 3. Restore Persistent Workspace
         uses: actions/cache@v4
         with:
-          path: C:\Users\CynetAdmin\workspace
+          path: C:\Users\behrad\workspace
           key: cynet-rdp-workspace-${{ github.run_id }}
           restore-keys: |
             cynet-rdp-workspace-
@@ -60,9 +60,9 @@ jobs:
           Write-Host "==================================================" -ForegroundColor Green
           Write-Host "  >>> RDP SERVER IS READY! <<<" -ForegroundColor Cyan
           Write-Host "  Tailscale IP    : $ts_ip" -ForegroundColor Yellow
-          Write-Host "  Username        : CynetAdmin" -ForegroundColor Yellow
-          Write-Host "  Password        : Cynet@2026" -ForegroundColor Yellow
-          Write-Host "  Persistent Path : C:\Users\CynetAdmin\workspace" -ForegroundColor Cyan
+          Write-Host "  Username        : behrad" -ForegroundColor Yellow
+          Write-Host "  Password        : 1389M1396m" -ForegroundColor Yellow
+          Write-Host "  Persistent Path : C:\Users\behrad\workspace" -ForegroundColor Cyan
           Write-Host "  >> Open mstsc and connect to: $ts_ip" -ForegroundColor Magenta
           Write-Host "==================================================" -ForegroundColor Green
 
@@ -78,5 +78,5 @@ jobs:
         uses: actions/cache@v4
         if: always()
         with:
-          path: C:\Users\CynetAdmin\workspace
+          path: C:\Users\behrad\workspace
           key: cynet-rdp-workspace-${{ github.run_id }}
