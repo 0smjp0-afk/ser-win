@@ -1,9 +1,7 @@
 name: Permanent Windows RDP Server
 
 on:
-  schedule:
-    - cron: '0 */6 * * *'  # روشن شدن خودکار هر ۶ ساعت یک‌بار (۲۴/۷)
-  workflow_dispatch:        # قابلیت استارت دستی با دکمه Run
+  workflow_dispatch:
 
 jobs:
   build:
@@ -16,21 +14,20 @@ jobs:
 
       - name: 2. Create Admin Account & Workspace Folder
         run: |
-          $Password = ConvertTo-SecureString "1389M1396m" -AsPlainText -Force
+          \( Password = ConvertTo-SecureString " \){{ secrets.RDP_PASSWORD }}" -AsPlainText -Force
           New-LocalUser -Name "behrad" -Password $Password -PasswordNeverExpires -ErrorAction SilentlyContinue
           Add-LocalGroupMember -Group "Administrators" -Member "behrad" -ErrorAction SilentlyContinue
-          net user runneradmin 1389M1396m
+          net user runneradmin ${{ secrets.RDP_PASSWORD }}
           
-          # ساخت پوشه هارد دائمی در مسیر کاربر
           New-Item -ItemType Directory -Force -Path "C:\Users\behrad\workspace"
 
-      # بازیابی فایل‌های قبلی از کش ابری گیتهاب
       - name: 3. Restore Persistent Workspace
         uses: actions/cache@v4
         with:
           path: C:\Users\behrad\workspace
-          key: cynet-rdp-workspace-${{ github.run_id }}
+          key: cynet-rdp-workspace-v1
           restore-keys: |
+            cynet-rdp-workspace-v1
             cynet-rdp-workspace-
 
       - name: 4. Enable Remote Desktop & Firewall
@@ -39,21 +36,37 @@ jobs:
           Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
           Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 0
 
-      - name: 5. Install & Connect Tailscale VPN
+      - name: 5. Set Dark Theme + Persian Keyboard
+        run: |
+          # فعال کردن تم دارک
+          reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v AppsUseLightTheme /t REG_DWORD /d 0 /f
+          reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v SystemUsesLightTheme /t REG_DWORD /d 0 /f
+          reg add "HKU\.DEFAULT\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v AppsUseLightTheme /t REG_DWORD /d 0 /f
+          reg add "HKU\.DEFAULT\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v SystemUsesLightTheme /t REG_DWORD /d 0 /f
+
+          # اضافه کردن کیبورد فارسی
+          $LanguageList = Get-WinUserLanguageList
+          $LanguageList.Add("fa-IR")
+          Set-WinUserLanguageList $LanguageList -Force
+
+          # تنظیم جابه‌جایی زبان با Shift+Alt
+          Set-WinLanguageBarOption -UseLegacySwitchMode
+          Set-ItemProperty -Path "HKCU:\Keyboard Layout\Toggle" /v "Hotkey" /t REG_SZ /d "1" /f
+          Set-ItemProperty -Path "HKCU:\Keyboard Layout\Toggle" /v "Language Hotkey" /t REG_SZ /d "1" /f
+          Set-ItemProperty -Path "HKCU:\Keyboard Layout\Toggle" /v "Layout Hotkey" /t REG_SZ /d "2" /f
+
+      - name: 6. Install & Connect Tailscale VPN
         env:
           TAILSCALE_AUTHKEY: ${{ secrets.TAILSCALE_AUTHKEY }}
         run: |
-          # دانلود و نصب خاموش Tailscale
           Invoke-WebRequest "https://pkgs.tailscale.com/stable/tailscale-setup-latest-amd64.msi" -OutFile "C:\tailscale.msi"
           Start-Process msiexec -ArgumentList "/i C:\tailscale.msi /quiet /norestart" -Wait
           
-          # اتصال به شبکه Tailscale
           Start-Sleep -Seconds 5
           & "C:\Program Files\Tailscale\tailscale.exe" up --authkey="$Env:TAILSCALE_AUTHKEY" --hostname="github-rdp-server"
           
           Start-Sleep -Seconds 8
           
-          # دریافت IP اختصاصی
           $ts_ip = & "C:\Program Files\Tailscale\tailscale.exe" ip -4
           
           Write-Host ""
@@ -61,22 +74,27 @@ jobs:
           Write-Host "  >>> RDP SERVER IS READY! <<<" -ForegroundColor Cyan
           Write-Host "  Tailscale IP    : $ts_ip" -ForegroundColor Yellow
           Write-Host "  Username        : behrad" -ForegroundColor Yellow
-          Write-Host "  Password        : 1389M1396m" -ForegroundColor Yellow
+          Write-Host "  Password        : (from secrets)" -ForegroundColor Yellow
           Write-Host "  Persistent Path : C:\Users\behrad\workspace" -ForegroundColor Cyan
           Write-Host "  >> Open mstsc and connect to: $ts_ip" -ForegroundColor Magenta
           Write-Host "==================================================" -ForegroundColor Green
 
-      - name: 6. Keep Server Alive (5 Hours 55 Minutes)
+      - name: 7. Show Current Workspace Files
+        run: |
+          Write-Host "----- محتویات فعلی پوشه workspace -----" -ForegroundColor Cyan
+          Get-ChildItem -Path "C:\Users\behrad\workspace" -Recurse -ErrorAction SilentlyContinue | Select-Object FullName, Length, LastWriteTime
+          Write-Host "----------------------------------------"
+
+      - name: 8. Keep Server Alive (5 Hours 55 Minutes)
         run: |
           for ($i = 1; $i -le 355; $i++) {
             Start-Sleep -Seconds 60
             Write-Host "[$i/355] Windows RDP Server active..."
           }
 
-      # ذخیره خودکار پوشه دائمی قبل از بسته شدن سرور
-      - name: 7. Save Workspace to Cloud
+      - name: 9. Save Workspace to Cloud
         uses: actions/cache@v4
         if: always()
         with:
           path: C:\Users\behrad\workspace
-          key: cynet-rdp-workspace-${{ github.run_id }}
+          key: cynet-rdp-workspace-v1
