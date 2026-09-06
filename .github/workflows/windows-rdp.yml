@@ -13,11 +13,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: 2. Create Admin Account & Workspace Folder
+        env:
+          RDP_PASSWORD: ${{ secrets.RDP_PASSWORD }}
         run: |
-          \( Password = ConvertTo-SecureString " \){{ secrets.RDP_PASSWORD }}" -AsPlainText -Force
+          $Password = ConvertTo-SecureString $env:RDP_PASSWORD -AsPlainText -Force
           New-LocalUser -Name "behrad" -Password $Password -PasswordNeverExpires -ErrorAction SilentlyContinue
           Add-LocalGroupMember -Group "Administrators" -Member "behrad" -ErrorAction SilentlyContinue
-          net user runneradmin ${{ secrets.RDP_PASSWORD }}
+          net user runneradmin $env:RDP_PASSWORD
           
           New-Item -ItemType Directory -Force -Path "C:\Users\behrad\workspace"
 
@@ -51,9 +53,9 @@ jobs:
 
           # تنظیم جابه‌جایی زبان با Shift+Alt
           Set-WinLanguageBarOption -UseLegacySwitchMode
-          Set-ItemProperty -Path "HKCU:\Keyboard Layout\Toggle" /v "Hotkey" /t REG_SZ /d "1" /f
-          Set-ItemProperty -Path "HKCU:\Keyboard Layout\Toggle" /v "Language Hotkey" /t REG_SZ /d "1" /f
-          Set-ItemProperty -Path "HKCU:\Keyboard Layout\Toggle" /v "Layout Hotkey" /t REG_SZ /d "2" /f
+          Set-ItemProperty -Path "HKCU:\Keyboard Layout\Toggle" -Name "Hotkey" -Value "1" -Type String -Force
+          Set-ItemProperty -Path "HKCU:\Keyboard Layout\Toggle" -Name "Language Hotkey" -Value "1" -Type String -Force
+          Set-ItemProperty -Path "HKCU:\Keyboard Layout\Toggle" -Name "Layout Hotkey" -Value "2" -Type String -Force
 
       - name: 6. Install & Connect Tailscale VPN
         env:
