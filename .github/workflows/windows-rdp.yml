@@ -12,91 +12,273 @@ jobs:
       - name: 1. Checkout Repository
         uses: actions/checkout@v4
 
-      - name: 2. Create Admin Account & Workspace Folder
+      - name: 2. Write Auto-Setup Script
+        env:
+          SETUP_B64: >-
+            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
+            mmx6/bb6BXFyR1rTm4Q9vZQZIZIXjiWYygaT9G6VqF4jXmVLLOHFrGzQ0/EZ3zMSFq6prQuZlYGktaiH2VViitaSdIsJx2jm
+            EychY4GFYIUwFWqSgNQ1tIR6hODXYkwh5pHY4RTyBi+jShmgsMJa3Cx6tZw4354+Che+cnKGg+Kh8sonAhmOLdPp2fK22z1P
+            em/03d5GGO2a4hv2819OGLZUT46kaY2ZE51Xm/hSwwQBue84DBsq+z8no499SsQdfnQnkxJSwH344kSOdEYoOkoVIQuPJ11l
+            viojPHuHhVep12Hcwwt77/llGNlv/L39lRd4Kc6d5L5mL9qJF8HNfMneI7J+Dz+EQ65/f/1f19+S6zfX/33z2x++In/79X+S
+            my9vPr/58m+//ur7L3746vpPWOftze9uviA3v71+8/1bKLh+c/O766/JzW/gn2+u/0xuPv/hK3z8Ldy/vT/6Hj6Yk/amgvOH
+            kCr893x48nWeM6RUKpHrr6Ebv7/+LqILSfrm5jdw+e0advE77MDN51jxf3/4Cvr2DVzefHH9Pz98dfM5lH8NXb35UvQfu/0N
+            FL4RzLj58voNonn4INrf8gxUPnFaaMpzQsrpnl3wZud0hwYDtxft0ZaPxfCde/mne7KOxeAnN6K9DMrBFXEYRhxKaVOnt0N9
+            3zxjgQISDS08rvLS6RX5mZkd/6wYHWN5zawkOi1ji1tWsT/e5CdW2d1YQFSPA9nxaSDQ58KzhM07vVKb5yfcM0SbZOZqHjUj
+            Z5Q4NTK39XK3cbJxsFdr1GvtDmZTHN2r8kUfflLNlzsn7Wan09p9Xt+q7T5nc1CQ51ZqUp32TmfvpLaxd9BpbW4d7j4XdcpV
+            qY7HuoGYRM8gb8MzPXGVI0WybM9vitkJwotp+opJBFAHWVFMk1kkS+ws7xGYyitBoJ7azh19qER49Jem56AkCyrfBb/7pmWz
+            9xadFKIXQQvmy2Fhy/WDaOer/AgsmVSeLK7htjDEEn7MRds04UKPP+oCFQvssyr0zHPHTq/u2qDh9UvTCTFxM6/oaMt/AcP8
+            DVjp938A834Lzun7P4BB/54Z/lvwAFAFPAB4NGayTGDb0C3pJeEvLQfzLXw6BoHwzINXjbfDRY2MsF7HPCOlrsgVyDx1Soft
+            eV2dvIsaQZ+1sEoibZ8BR98stQ4m4xBV4nJZBISwYmL2erRnZDD5uUdp+B6FnN0wCUg2fvLiEnwJUOBngfyE2na4cS3qczub
+            7ZJo+Gd10lpEiNijR2zR0AeVzGPdL10YD8wXybye2VnzMtaojFhBMBJe/xnDwZ8gCLwB5XqMKvdHKHwDGgVF39z8DqvEFbQ4
+            SGLQfMPCJsYSNWTqIR+SXo7Mg8O0xRlU/gUiSAFw5zWk+NQ5F5vAD1w3OOaXC9XjbtAfQuLKvmoy8fUQM5hqFU1VkCZ9ZQm/
+            QRBynvB3drFtwFPaLIzo40grgcUYy3n6R4zdLNDiJUZnKITaX0Q8VmIwB00ITkXE4IqEzS8Fnh09wHlSfAG08AEd9+zMpmJL
+            /jw/yPMi9EDb5iW45GNeZz5pptKr52MoaJRsq4x8xEZCkvGZKClNzni/ndyWbbmZDzWbbLkBOMv58PUg85V58YKQeDf1bHCx
+            t9NCTStsgm3zWUYbi4Y65qk90ftMraILsoqmPhWU+PLX1Cq6oLNYAjb8OTddSBe/AJtF64bs8Bt0E9+/hZTx5q9g4N+iNqK3
+            +AvRoPRriDnS6RlUWEgj0ZV8fv0dlIKa67Hi3vb9o6xCPy7dVEvjz2rlFNq5MsziMAl5afkENyMHg9TX1IiGFD1hZMHfIf5v
+            6/ch2kWWKMBo/xJlGx6/aeAH3jrsA2/TSnNRxxzgO5Deb+MUAVwQyPYtpgbf/0FKDDAlcR3Ttv494Rmmfw8bo84/liBN8h8J
+            hJlOJEnUzJ4kBYCbPXDXB1Xdxml7RvV85vuG7gSbRyaA7k8LPu1WWsMh8vScMtFCYaZjacTf/GMvNbwXzzL1b3IKpVBa294m
+            jb3d5gdEc1z2mUPwufiuRNrLTk5ywESOdB2Hr9+x/OMvcf7R3H2yWZse3v10FkYDWa9TzWXxBx98QJoHB3sHfDSRAntAe6lG
+            cycG//oLJEXdTzsevi8j1RC1gTW+4rMBN3+FXAPSNUzAeH735uY/0CtDUofPvghnKhIEhx+AdEfy9x9zvvH4f4j9PxDXcgAA
+        run: |
+          $dir = "C:\rdp-setup"
+          New-Item -ItemType Directory -Force -Path $dir | Out-Null
+
+          # The setup script (Persian keyboard + Alt+Shift + dark theme + Chrome
+          # default) is stored here as gzip+base64 so this file stays standalone.
+          $bytes = [Convert]::FromBase64String($env:SETUP_B64)
+          $ms = New-Object System.IO.MemoryStream
+          $ms.Write($bytes, 0, $bytes.Length)
+          $ms.Position = 0
+          $gs = New-Object System.IO.Compression.GzipStream($ms, [System.IO.Compression.CompressionMode]::Decompress)
+          $sr = New-Object System.IO.StreamReader($gs, [System.Text.Encoding]::UTF8)
+          $script = $sr.ReadToEnd()
+          $sr.Close(); $gs.Close(); $ms.Close()
+
+          [System.IO.File]::WriteAllText("$dir\Setup-UserEnvironment.ps1", $script, (New-Object System.Text.UTF8Encoding($true)))
+          Write-Host "Setup script written: $dir\Setup-UserEnvironment.ps1" -ForegroundColor Green
+
+      - name: 3. Create Admin Account
         env:
           RDP_PASSWORD: ${{ secrets.RDP_PASSWORD }}
         run: |
+          if ([string]::IsNullOrWhiteSpace($env:RDP_PASSWORD)) {
+            throw "Secret RDP_PASSWORD is not set."
+          }
           $Password = ConvertTo-SecureString $env:RDP_PASSWORD -AsPlainText -Force
-          New-LocalUser -Name "behrad" -Password $Password -PasswordNeverExpires -ErrorAction SilentlyContinue
-          Add-LocalGroupMember -Group "Administrators" -Member "behrad" -ErrorAction SilentlyContinue
-          net user runneradmin $env:RDP_PASSWORD
-          
-          New-Item -ItemType Directory -Force -Path "C:\Users\behrad\workspace"
 
-      - name: 3. Restore Persistent Workspace
-        uses: actions/cache@v4
+          # If C:\Users\behrad already exists, Windows appends the machine name to
+          # the profile folder. Move a leftover (non-profile) folder aside so the
+          # profile lands exactly at C:\Users\behrad.SMJP.
+          $StaleFolder = "C:\Users\behrad"
+          if (Test-Path $StaleFolder) {
+            if (-not (Test-Path (Join-Path $StaleFolder "NTUSER.DAT"))) {
+              $Aside = "C:\Users\behrad.old-" + (Get-Date -Format "yyyyMMddHHmmss")
+              Rename-Item -Path $StaleFolder -NewName (Split-Path $Aside -Leaf) -ErrorAction SilentlyContinue
+              Write-Host "Leftover folder moved: $StaleFolder -> $Aside"
+            }
+          }
+
+          if (Get-LocalUser -Name "behrad" -ErrorAction SilentlyContinue) {
+            Rename-LocalUser -Name "behrad" -NewName "behrad.SMJP" -ErrorAction SilentlyContinue
+          }
+
+          New-LocalUser -Name "behrad.SMJP" -Password $Password -PasswordNeverExpires -ErrorAction SilentlyContinue
+          $u = Get-LocalUser -Name "behrad.SMJP" -ErrorAction SilentlyContinue
+          if (-not $u) { throw "Failed to create user behrad.SMJP. Check the RDP_PASSWORD secret." }
+
+          Add-LocalGroupMember -Group "Administrators" -Member "behrad.SMJP" -ErrorAction SilentlyContinue
+          $admins = Get-LocalGroupMember -Group "Administrators" | ForEach-Object { $_.Name }
+          if (-not ($admins -match 'behrad\.SMJP')) { throw "behrad.SMJP was not added to Administrators." }
+
+          net user runneradmin "$env:RDP_PASSWORD"
+
+          # Workspace lives outside C:\Users so the profile folder keeps its exact name.
+          New-Item -ItemType Directory -Force -Path "C:\workspace" | Out-Null
+          icacls "C:\workspace" /grant "behrad.SMJP:(OI)(CI)F" /T /Q | Out-Null
+
+          # Let the user write the setup log.
+          icacls "C:\rdp-setup" /grant "behrad.SMJP:(OI)(CI)M" /T /Q | Out-Null
+
+          Write-Host "Account behrad.SMJP created and verified." -ForegroundColor Cyan
+
+      - name: 4. Restore Persistent Workspace
+        uses: actions/cache/restore@v4
         with:
-          path: C:\Users\behrad\workspace
-          key: cynet-rdp-workspace-v1
+          path: C:\workspace
+          key: cynet-rdp-workspace-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: |
-            cynet-rdp-workspace-v1
             cynet-rdp-workspace-
 
-      - name: 4. Enable Remote Desktop & Firewall
+      - name: 5. Grant Workspace Permissions
+        run: |
+          icacls "C:\workspace" /grant "behrad.SMJP:(OI)(CI)F" /T /Q | Out-Null
+
+      - name: 6. Apply User Setup Now (Before You Log In)
+        env:
+          RDP_PASSWORD: ${{ secrets.RDP_PASSWORD }}
+        run: |
+          $ScriptPath = "C:\rdp-setup\Setup-UserEnvironment.ps1"
+          $TaskName   = "BehradUserEnvironmentSetup"
+          $TargetUser = "behrad.SMJP"
+
+          $Action  = New-ScheduledTaskAction -Execute "powershell.exe" `
+            -Argument "-NoProfile -NonInteractive -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$ScriptPath`""
+          $Trigger = New-ScheduledTaskTrigger -AtLogOn -User $TargetUser
+          $Settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -ExecutionTimeLimit (New-TimeSpan -Minutes 30)
+
+          # A stored-password principal runs even with no interactive session, so this
+          # both applies the settings now and re-applies them at every later logon.
+          Register-ScheduledTask -TaskName $TaskName -Action $Action -Trigger $Trigger `
+            -Settings $Settings -User $TargetUser -Password $env:RDP_PASSWORD -Force | Out-Null
+
+          Start-ScheduledTask -TaskName $TaskName
+
+          $ProfilePath = "C:\Users\$TargetUser"
+          $ok = $false
+          for ($i = 1; $i -le 60; $i++) {
+            Start-Sleep -Seconds 5
+            if (Test-Path (Join-Path $ProfilePath "NTUSER.DAT")) { $ok = $true; break }
+          }
+
+          Write-Host ""
+          Write-Host "==================================================" -ForegroundColor Green
+          Write-Host "  Username        : behrad.SMJP" -ForegroundColor Yellow
+          Write-Host "  Profile Path    : $ProfilePath" -ForegroundColor Yellow
+          Write-Host "  Profile Ready   : $ok" -ForegroundColor Yellow
+          Write-Host "  Setup Task      : $TaskName (at each logon)" -ForegroundColor Yellow
+          Write-Host "==================================================" -ForegroundColor Green
+
+          Write-Host ""
+          Write-Host "  >>> RDP SERVER IS READY! <<<" -ForegroundColor Cyan
+          Write-Host "  Username        : behrad.SMJP" -ForegroundColor Yellow
+          Write-Host "  Persistent Path : C:\workspace" -ForegroundColor Cyan
+          Write-Host "  >> Run the Tailscale step next to get your IP." -ForegroundColor Magenta
+
+          if (Test-Path "C:\rdp-setup\setup.log") {
+            Write-Host "--- setup.log (last lines) ---" -ForegroundColor Cyan
+            Get-Content "C:\rdp-setup\setup.log" -ErrorAction SilentlyContinue | Select-Object -Last 40
+            Write-Host "------------------------------"
+          } else {
+            Write-Host "No setup.log yet; it will be written at the first logon." -ForegroundColor Yellow
+          }
+
+      - name: 7. Enable Remote Desktop & Firewall
         run: |
           Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name "fDenyTSConnections" -Value 0
           Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
           Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 0
 
-      - name: 5. Set Dark Theme + Persian Keyboard
-        run: |
-          # فعال کردن تم دارک
-          reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v AppsUseLightTheme /t REG_DWORD /d 0 /f
-          reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v SystemUsesLightTheme /t REG_DWORD /d 0 /f
-          reg add "HKU\.DEFAULT\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v AppsUseLightTheme /t REG_DWORD /d 0 /f
-          reg add "HKU\.DEFAULT\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v SystemUsesLightTheme /t REG_DWORD /d 0 /f
-
-          # اضافه کردن کیبورد فارسی
-          $LanguageList = Get-WinUserLanguageList
-          $LanguageList.Add("fa-IR")
-          Set-WinUserLanguageList $LanguageList -Force
-
-          # تنظیم جابه‌جایی زبان با Shift+Alt
-          Set-WinLanguageBarOption -UseLegacySwitchMode
-          Set-ItemProperty -Path "HKCU:\Keyboard Layout\Toggle" -Name "Hotkey" -Value "1" -Type String -Force
-          Set-ItemProperty -Path "HKCU:\Keyboard Layout\Toggle" -Name "Language Hotkey" -Value "1" -Type String -Force
-          Set-ItemProperty -Path "HKCU:\Keyboard Layout\Toggle" -Name "Layout Hotkey" -Value "2" -Type String -Force
-
-      - name: 6. Install & Connect Tailscale VPN
+      - name: 8. Install & Connect Tailscale VPN
         env:
           TAILSCALE_AUTHKEY: ${{ secrets.TAILSCALE_AUTHKEY }}
         run: |
           Invoke-WebRequest "https://pkgs.tailscale.com/stable/tailscale-setup-latest-amd64.msi" -OutFile "C:\tailscale.msi"
           Start-Process msiexec -ArgumentList "/i C:\tailscale.msi /quiet /norestart" -Wait
-          
+
           Start-Sleep -Seconds 5
           & "C:\Program Files\Tailscale\tailscale.exe" up --authkey="$Env:TAILSCALE_AUTHKEY" --hostname="github-rdp-server"
-          
+
           Start-Sleep -Seconds 8
-          
+
           $ts_ip = & "C:\Program Files\Tailscale\tailscale.exe" ip -4
-          
+
           Write-Host ""
           Write-Host "==================================================" -ForegroundColor Green
           Write-Host "  >>> RDP SERVER IS READY! <<<" -ForegroundColor Cyan
           Write-Host "  Tailscale IP    : $ts_ip" -ForegroundColor Yellow
-          Write-Host "  Username        : behrad" -ForegroundColor Yellow
+          Write-Host "  Username        : behrad.SMJP" -ForegroundColor Yellow
           Write-Host "  Password        : (from secrets)" -ForegroundColor Yellow
-          Write-Host "  Persistent Path : C:\Users\behrad\workspace" -ForegroundColor Cyan
+          Write-Host "  Persistent Path : C:\workspace" -ForegroundColor Cyan
           Write-Host "  >> Open mstsc and connect to: $ts_ip" -ForegroundColor Magenta
           Write-Host "==================================================" -ForegroundColor Green
 
-      - name: 7. Show Current Workspace Files
+      - name: 9. Show Current Workspace Files
         run: |
-          Write-Host "----- محتویات فعلی پوشه workspace -----" -ForegroundColor Cyan
-          Get-ChildItem -Path "C:\Users\behrad\workspace" -Recurse -ErrorAction SilentlyContinue | Select-Object FullName, Length, LastWriteTime
+          Write-Host "----- current contents of the workspace folder -----" -ForegroundColor Cyan
+          Get-ChildItem -Path "C:\workspace" -Recurse -ErrorAction SilentlyContinue | Select-Object FullName, Length, LastWriteTime
           Write-Host "----------------------------------------"
 
-      - name: 8. Keep Server Alive (5 Hours 55 Minutes)
+      - name: 10. Keep Server Alive (5 Hours 40 Minutes)
         run: |
-          for ($i = 1; $i -le 355; $i++) {
+          for ($i = 1; $i -le 340; $i++) {
             Start-Sleep -Seconds 60
-            Write-Host "[$i/355] Windows RDP Server active..."
+            Write-Host "[$i/340] Windows RDP Server active..."
           }
 
-      - name: 9. Save Workspace to Cloud
-        uses: actions/cache@v4
+      - name: 11. Save Workspace to Cloud
+        uses: actions/cache/save@v4
         if: always()
         with:
-          path: C:\Users\behrad\workspace
-          key: cynet-rdp-workspace-v1
+          path: C:\workspace
+          key: cynet-rdp-workspace-${{ github.run_id }}-${{ github.run_attempt }}
